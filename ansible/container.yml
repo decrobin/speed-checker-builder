@@ -1,0 +1,26 @@
+version: "1"
+
+services:
+  postgresql:
+    image: centos:7
+    expose:
+      - "5432"
+    hostname: speed-checker-postgres
+    volumes:
+      - '/var/lib/pgsql/9.4/data'
+    command: ['su', '-c', '/usr/pgsql-9.4/bin/pg_ctl -D /var/lib/pgsql/9.4/data -l /var/log/postgresql/logfile start && tail -f /var/log/postgresql/logfile', '-', 'postgres']
+  monitor:
+    image: python:2.7
+    links:
+      - postgresql
+    command: /usr/src/speed-checker/run.sh
+  flask:
+    image: python:2.7
+    ports:
+      - "5000:5000"
+    links:
+      - postgresql
+      - monitor
+    command: python /usr/src/speed-checker/app.py
+
+registries: {}

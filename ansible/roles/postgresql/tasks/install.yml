@@ -1,0 +1,36 @@
+# file: roles/install-postgresql-on-el6/tasks/install.yml -- install postgresql packages
+
+- name: "Stage 1: Install prerequisite packages"
+  yum:
+    state: present
+    pkg: "{{ item }}"
+  with_items:
+    - sudo
+
+- name: "Stage 1: install repository package"
+  yum: 
+    state: present
+    pkg: "{{ item.repo }}"
+  when: item.version == "{{ postgresql_version }}"
+  with_items: postgresql_repo_CentOS
+
+- name: "Stage 1: install postgresql packages"
+  yum: 
+    state: latest
+    update_cache: yes
+    pkg: "{{ item }}"
+  with_items:
+    - postgresql{{ postgresql_version |replace('.', '') }}-server
+    - postgresql{{ postgresql_version |replace('.', '') }}
+    - python-psycopg2
+  register: yum_output
+
+- name: "Debug yum"
+  debug:
+    msg="{{ yum_output }}"
+
+- name: "Stage 1: install postgresql contrib package"
+  yum: 
+    state: latest
+    pkg: postgresql{{ postgresql_version |replace('.', '') }}-contrib
+  when: postgresql_contrib

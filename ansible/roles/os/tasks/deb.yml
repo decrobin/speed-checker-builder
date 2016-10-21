@@ -1,0 +1,12 @@
+- name: Update all packages using apt
+  apt: update_cache=yes
+
+- name: Set timezone to sydney
+  copy: content='Australia/Sydney'
+        dest=/etc/timezone
+        owner=root
+        group=root
+        mode=0644
+
+- name: Reconfig timezone service
+  command: dpkg-reconfigure --frontend noninteractive tzdata

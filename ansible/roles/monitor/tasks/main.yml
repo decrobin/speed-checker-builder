@@ -1,0 +1,45 @@
+- name: Install required packages from apt
+  apt: name={{item}} state=installed
+  with_items:
+       - postgresql-client
+       - cron
+
+- name: Install required packages from pip
+  pip:
+    name=speedtest-cli
+
+- name: Create directory for speed checker script
+  file:
+    path="{{ src_dir }}"
+    state=directory
+    mode=0755
+
+- name: Copy shell scripts
+  copy:
+    src="{{ item }}"
+    dest="{{ src_dir }}/{{ item }}"
+    mode=0755
+  with_items:
+    - speed-checker.sh
+    - run.sh
+
+- name: Create log file so tail doesn't fail
+  file:
+    path="{{ src_dir }}/speed-checker.log"
+    state=touch
+    mode=0766
+
+- name: Copy .pgpass
+  copy:
+    src=.pgpass
+    dest=/root/.pgpass
+    mode=0600
+
+- name: Create cronjob
+  cron:
+    name="speed-checker-cron"
+    state=present
+    job=/usr/src/speed-checker/speed-checker.sh
+    user=root
+    cron_file=speed-checker-cron
+

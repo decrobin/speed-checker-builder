@@ -1,0 +1,32 @@
+# This should be your Ansible playbooks to provision your containers.
+# An inventory will be automatically created using the names of the services
+# from your container.yml file.
+# Add any roles or other modules you'll need to this directory too.
+# For many examples of roles, check out Ansible Galaxy: https://galaxy.ansible.com/
+#
+---
+# - hosts: postgresql
+#   gather_facts: false
+#   post_tasks:
+#     - name: Manually update apt
+#       shell: apt-get update -y
+#     - name: Manually get python
+#       shell: apt-get install -y python
+
+- hosts: postgresql
+  gather_facts: true
+  roles:
+    - os
+    - postgresql
+
+- hosts: monitor
+  gather_facts: true
+  roles:
+    - os
+    - monitor
+
+- hosts: flask
+  gather_facts: true
+  roles:
+    - os
+    - flask

@@ -1,0 +1,16 @@
+- name: What is ansible_version?
+  debug:
+    var=ansible_version
+
+# - name: Update all packages using yum
+#    yum: update_cache=yes
+
+- name: Check current timezone
+  shell: awk -F\" '{ print $2 }' /etc/sysconfig/clock
+  register: current_zone
+  changed_when: False
+  ignore_errors: True
+
+- name: Set UTC timezone
+  file: src=/usr/share/zoneinfo/Australia/Sydney  dest=/etc/localtime state=link force=yes
+  when: current_zone.stdout != 'Australia/Sydney'

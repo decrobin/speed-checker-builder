@@ -1,0 +1,7 @@
+- include: rhel.yml
+  when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+
+- include: deb.yml
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
+
+

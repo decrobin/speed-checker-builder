@@ -1,0 +1,5 @@
+- name: start postgresql
+  shell: /usr/pgsql-{{ postgresql_version }}/bin/pg_ctl -D /var/lib/pgsql/{{ postgresql_version }}/data -l {{ postgresql_log_directory }}/logfile start
+
+- name: start postgresql
+  shell: /usr/pgsql-{{ postgresql_version }}/bin/pg_ctl -D /var/lib/pgsql/{{ postgresql_version }}/data -l {{ postgresql_log_directory }}/logfile restart

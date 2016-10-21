@@ -1,0 +1,15 @@
+- name: "Create folder for scripts on container"
+  file:
+    path="{{ postgresql_file_folder }}"
+    state=directory
+    mode=0755
+
+- name: "Stage 5: Copy sql file to container"
+  copy: src="{{ item.name }}" dest="{{ postgresql_file_folder }}"
+  with_items: postgresql_tables
+
+- name: "Stage: 5: Execute sql files"
+  become: true
+  become_user: "{{ postgresql_admin_user }}"
+  command: "psql -f /{{ postgresql_file_folder }}/{{ item.name }} -d {{ item.db }}"
+  with_items: postgresql_tables

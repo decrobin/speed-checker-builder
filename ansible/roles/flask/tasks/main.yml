@@ -1,0 +1,23 @@
+- name: Install required packages from pip
+  pip: name={{item}}
+  with_items:
+       - psycopg2
+       - pygal
+       - Flask
+
+- name: Create source directory
+  file:
+    path="{{ src_dir }}"
+    state=directory
+    mode=0755
+
+- name: Copy .pgpass
+  copy:
+    src=.pgpass
+    dest=/root/.pgpass
+    mode=0600
+
+- name: Copy flask app
+  copy:
+    src=app.py
+    dest="{{ src_dir }}/app.py"
